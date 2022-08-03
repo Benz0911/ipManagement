@@ -22,6 +22,7 @@ Route::middleware(['auth:sanctum'])->get('/user/auth', function (Request $reques
 Route::middleware('auth:sanctum')->group(function () {
     //ip
     Route::prefix('/ip')->group(function () {
-        Route::post('/create/store', 'App\Http\Controllers\IpController@store')->name('ip.store');
+        Route::post('/create/store', 'IpController@store')->name('ip.store');
+        Route::get('/get-ips', 'IpController@index')->name('ip.index');
     });
 });

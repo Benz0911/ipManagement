@@ -6,6 +6,7 @@ use App\Models\Ip;
 use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\IpCollection;
 
 
 class IpController extends Controller
@@ -17,7 +18,9 @@ class IpController extends Controller
      */
     public function index()
     {
-        //
+        $ips = Ip::paginate(15);
+
+        return new IpCollection($ips);
     }
 
     public function create()
@@ -28,7 +31,7 @@ class IpController extends Controller
     public function store(Request $request)
     {
         $validated =  request()->validate([
-            'ip' => 'required | unique:ips,ip',
+            'ip' => 'required | ip | unique:ips,ip',
             'label' => 'required | unique:ips,label',
         ]);
 
