@@ -1,30 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
 import Login from '@/views/pages/Login.vue'
 import IpView from '@/views/pages/IpView.vue'
+import ActivityLogs from '@/views/pages/ActivityLogs.vue'
 import NotFound from '@/views/pages/NotFound.vue'
 import {useAuthUserStore} from '@/stores/auth'
 
 const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView,
-    meta: {
-      title: 'Home',
-      requiresAuth: true,
-    }
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: AboutView,
-    meta: {
-      title: 'About',
-      requiresAuth: true,
-    }
-  },
   {
     path: '/login',
     name: 'login',
@@ -35,11 +16,20 @@ const routes = [
     }
   },
   {
-    path: '/ip',
+    path: '/',
     name: 'ip',
     component: IpView,
     meta: {
       title: 'IpView',
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/activity-logs',
+    name: 'activity',
+    component: ActivityLogs,
+    meta: {
+      title: 'ActivityLogs',
       requiresAuth: true,
     }
   },

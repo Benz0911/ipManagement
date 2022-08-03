@@ -25,5 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/create/store', 'IpController@store')->name('ip.store');
         Route::patch('/update-ip/{ip}', 'IpController@update')->name('ip.update');
         Route::get('/get-ips', 'IpController@index')->name('ip.index');
+
+        Route::get('/get-logs', 'LogController@index')->name('ip.index');
     });
 });

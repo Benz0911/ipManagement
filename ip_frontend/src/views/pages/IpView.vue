@@ -27,7 +27,7 @@
             <div class="card-header">
                 <h3 class="card-title">IP LIST</h3>
             </div>
-            <div class="car-body">
+            <div class="card-body">
                 <table class="table table-bordered table-dark">
                     <thead>
                         <tr>
@@ -42,7 +42,7 @@
                                 <td>{{list.ip}}</td>
                                 <td>{{list.label}}</td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" data-toggle="tooltip" title="View Logs" @click="viewLogs(list)" data-bs-toggle="modal" data-bs-target="#viewLogs">view log</button>
+                                    <button class="btn btn-primary btn-sm me-1" data-toggle="tooltip" title="View Logs" @click="viewLogs(list)" data-bs-toggle="modal" data-bs-target="#viewLogs">View Log</button>
                                     <button class="btn btn-warning btn-sm" data-toggle="tooltip" title="Update Label" @click="updateData(list)" data-bs-toggle="modal" data-bs-target="#staticBackdrop"> <i class="fa fa-pencil"></i>Update</button>
                                 </td>
                             </tr>
@@ -55,6 +55,7 @@
   </div>
 
 <!-- Modal -->
+
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -76,7 +77,10 @@
     </div>
 </div>
 
+
+
 <!-- Modal -->
+
 <div class="modal fade" id="viewLogs" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="viewLogsLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -97,10 +101,13 @@
                 <tbody>
                     <template v-for="l in logs">
                         <tr>
-                            <td>{{l.type}}</td>
+                            <td> 
+                                <span v-if="l.type == 'Add'" class="badge bg-primary">{{l.type}}</span>
+                                <span v-else-if="l.type == 'Update'" class="badge bg-warning">{{l.type}}</span>
+                            </td>
                             <td>{{l.prev_data?l.prev_data.label:l.prev_data}}</td>
                             <td>{{l.new_data?l.new_data.label:l.new_data}}</td>
-                            <td></td>
+                            <td>{{l.name}}</td>
                         </tr>
                     </template>
                 </tbody>
@@ -115,11 +122,8 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import axios from '@/libs/axios'
-import { useAuthUserStore } from '@/stores/auth'
-import { useRouter } from 'vue-router'
+import { useToast } from "vue-toastification"
 
-const auth = useAuthUserStore()
-const router = useRouter()
 
 const form = reactive({
     'ip':'',
@@ -130,57 +134,67 @@ const form_update = reactive({
     'label':'',
 })
 
+const toast = useToast();
+
 const update_id = ref(null)
 
 const ips = ref([])
 
 const logs = ref([])
 
-const close = ref(null);
-
 const getIps = () => {
     axios.get('api/ip/get-ips').then(res => {
-        console.log(res)
         ips.value = res.data.data
     })
 }
 
 const viewLogs = (data) => {
-    logs.value = data.logs
+    logs.value = data.logs.data
 }
 
 const updateData = (data) => {
     update_id.value = data.id
     form_update.label = data.label
-    // console.log(close.value.click);
 }
 
 const save = () => {
     axios.post('api/ip/create/store', form)
         .then((response) => {
+            toast.success(response.data.message, {
+                timeout: 2000
+            });
             clearForm()
             getIps()
         }).catch((error) => {
-            // loading.value = false
+
+            if(error.response.data.errors.ip){
+                toast.error(error.response.data.errors.ip[0], {
+                    timeout: 2000
+                });
+            }
+            
+            if(error.response.data.errors.label){
+                toast.error(error.response.data.errors.label[0], {
+                    timeout: 2000
+                });
+            }
         })
 }
 
 const update = () => {
     axios.patch(`api/ip/update-ip/${update_id.value}`, form_update)
         .then((response) => {
+            toast.success(response.data.message, {
+                timeout: 2000
+            });
             getIps()
         }).catch((error) => {
-            // loading.value = false
+            if(error.response.data.errors.label){
+                toast.error(error.response.data.errors.label[0], {
+                    timeout: 2000
+                });
+            }
         })
-}
-
-
-const logout = () => {
-    auth.logout()
-    
-    setTimeout(function(){
-        router.push({name:'login'})
-    },500)
 }
 
 const clearForm = () => {

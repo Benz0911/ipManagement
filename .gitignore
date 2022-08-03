@@ -20,7 +20,6 @@
 /ip_backend/public/storage
 /ip_backend/storage/*.key
 /ip_backend/vendor
-/ip_backend/.env
 /ip_backend/.env.backup
 /ip_backend/.phpunit.result.cache
 /ip_backend/docker-compose.override.yml
