@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
 import Login from '@/views/pages/Login.vue'
 import IpView from '@/views/pages/IpView.vue'
+import NotFound from '@/views/pages/NotFound.vue'
 import {useAuthUserStore} from '@/stores/auth'
 
 const routes = [
@@ -42,6 +43,15 @@ const routes = [
       requiresAuth: true,
     }
   },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'notfound',
+    component: NotFound,
+    meta: {
+        title: 'Not Found',
+        requiresAuth: false,
+    }
+  },
 ]
 
 const router = createRouter({
@@ -74,7 +84,7 @@ router.beforeEach((to, from, next) => {
           if(to.name === 'notfound'){
             next()
           }else{
-            next({ name: 'dashboard' })
+            next({ name: 'ip' })
           }
         }else{
           next() 

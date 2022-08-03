@@ -17,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum'])->get('/user/auth', function (Request $request) {
     return $request->user();
 });
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    //ip
+    Route::prefix('/ip')->group(function () {
+        Route::post('/create/store', 'App\Http\Controllers\IpController@store')->name('ip.store');
+    });
+});

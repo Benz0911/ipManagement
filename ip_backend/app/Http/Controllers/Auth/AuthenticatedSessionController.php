@@ -25,6 +25,13 @@ class AuthenticatedSessionController extends Controller
 
         $token = $user->createToken(request()->ip());
 
+
+        $logs = $user->log()->create([
+            'new_data' => '',
+            'prev_data' => '',
+            'type' => 1,
+        ]); 
+
         return [
             'token' => $token->plainTextToken,
             'user' => $user,
