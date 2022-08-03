@@ -51,16 +51,17 @@ class IpController extends Controller
 
     public function update(Request $request, Ip $ip)
     {
+        $new_data = $ip;
+        $prev_data = $ip->getOriginal();
+
         $validated =  request()->validate([
             'label' => "required | unique:ips,label,$ip->id",
         ]);
 
-        $prev_data = $ip;
-
         $updated = $ip->update($validated);
 
         $logs = $ip->log()->create([
-            'new_data' => json_encode($updated),
+            'new_data' => json_encode($new_data),
             'prev_data' => json_encode($prev_data),
             'type' => 3,
             'user_id' => Auth::id(),
